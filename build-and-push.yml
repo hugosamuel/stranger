@@ -5,8 +5,8 @@ resources:
   type: git
   icon: github
   source:
-    uri: https://github.com/concourse/examples.git
-    branch: master
+    uri: https://github.com/hugosamuel/stranger.git
+    branch: main
 
 # Where we will push the image
 - name: simple-image
@@ -15,9 +15,9 @@ resources:
   source:
     # You need to provide these variables when
     # setting the pipeline
-    repository: ((image-repo-name))/simple-image
-    username: ((registry-username))
-    password: ((registry-password))
+    repository: 763ed2a0a734/simple-image
+    username: conversao
+    password: &3hx%Zc+%/9b:nw
 
 jobs:
 - name: build-and-push
