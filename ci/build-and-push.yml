@@ -16,8 +16,8 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository: 763ed2a0a734/simple-image
-    username: ((763ed2a0a734))
-    password: ((&3hx%Zc+%/9b:nw))
+    username: ((registry-username))
+    password: ((registry-password))
 
 jobs:
 - name: build-and-push
