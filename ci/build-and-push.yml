@@ -15,7 +15,7 @@ resources:
   source:
     # You need to provide these variables when
     # setting the pipeline
-    repository: 763ed2a0a734/simple-image
+    repository: ((repo-img-name))
     username: ((registry-username))
     password: ((registry-password))
 
