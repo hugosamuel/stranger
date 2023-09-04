@@ -2,6 +2,6 @@
 # Variaveis utilizadas na esteira de Build e Publish 
 ###############################################################################
 ---
-registry-username: "hugo.hscb@gmail.com "
+registry-username: "hugo.hscb@gmail.com"
 registry-password: "Jfrog@987"
 repo-img-name: "/docker-local/"
