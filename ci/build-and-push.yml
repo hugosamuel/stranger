@@ -15,7 +15,7 @@ resources:
   source:
     # You need to provide these variables when
     # setting the pipeline
-    endpoint: https://slw.jfrog.io/artifactory/docker-local/
+    endpoint: https://slw.jfrog.io/artifactory/
     repository: ((repo-img-name))
     tag: latest
     username: ((registry-username))
