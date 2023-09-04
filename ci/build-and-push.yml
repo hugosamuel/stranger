@@ -15,8 +15,9 @@ resources:
   source:
     # You need to provide these variables when
     # setting the pipeline
-    repository: ((repo-img-name))/simple-image
-    tag: 1.0.0
+    endpoint: https://slw.jfrog.io/artifactory/docker-local/
+    repository: ((repo-img-name))
+    tag: latest
     username: ((registry-username))
     password: ((registry-password))
 
