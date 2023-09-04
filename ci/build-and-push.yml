@@ -16,7 +16,7 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository:  slw.jfrog.io/((repo-img-name))/strapi
-    tag: latest
+    tag: "(?<version>.*)"
     username: ((registry-username))
     password: ((registry-password))
 
