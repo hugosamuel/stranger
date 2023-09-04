@@ -16,7 +16,7 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository:  slw.jfrog.io/((repo-img-name))/strapi
-    tag: "((?<version>.*))"
+    tag: $(git rev-parse --short HEAD)
     username: ((registry-username))
     password: ((registry-password))
 
