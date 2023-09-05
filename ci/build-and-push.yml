@@ -60,6 +60,6 @@ jobs:
   - get: version
     params: {bump: minor}
   - task: a-thing-that-needs-a-version
-  config:
-  - put: version
-    params: {file: version/version}
+    config:
+    - put: version
+      params: {file: version/version}
