@@ -8,6 +8,24 @@ resources:
     uri: https://github.com/hugosamuel/stranger.git
     branch: main
 
+resources:
+- name: version
+  type: semver
+  source:
+    driver: git
+    uri: https://github.com/hugosamuel/stranger.git
+    branch: main
+    file: version
+
+
+plan:
+- get: version
+  params: {bump: minor}
+- task: a-thing-that-needs-a-version
+- put: version
+  params: {file: version/version}
+  
+
 # Where we will push the image
 - name: simple-image
   type: registry-image
@@ -16,7 +34,7 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository:  slw.jfrog.io/((repo-img-name))/strapi
-    tag: $(git rev-parse --short HEAD)
+    tag: {file: version/version}
     username: ((registry-username))
     password: ((registry-password))
 
