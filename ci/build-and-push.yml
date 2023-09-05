@@ -54,10 +54,11 @@ jobs:
   - put: simple-image
     params:
       image: image/image.tar
-
-plan:
-- get: version
-  params: {bump: minor}
-- task: a-thing-that-needs-a-version
-- put: version
-  params: {file: version/version}
+      
+- name: resource-tag
+  plan:
+  - get: version
+    params: {bump: minor}
+  - task: a-thing-that-needs-a-version
+  - put: version
+    params: {file: version/version}
