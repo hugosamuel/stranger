@@ -76,7 +76,7 @@ jobs:
               echo ${DATESTRING} > version-info/release-tags
               echo $BRANCH_NAME
               echo "---------- DBUG003-list do dist"
-              ls -la meu-repositorio-git/dist
+              ls -la meu-repositorio-git
 
   - put: application-repository
     resource: simple-image
