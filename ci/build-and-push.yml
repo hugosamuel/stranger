@@ -70,7 +70,7 @@ jobs:
               cd meu-repositorio-git 
               echo "---------- DBUG002-criando a tag"
               export BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
-              export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S")
+              export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S") $(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-latest
               cd ..              
               pwd && ls -la
               echo ${DATESTRING} > version-info/release-tags
