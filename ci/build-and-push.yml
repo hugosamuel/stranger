@@ -1,12 +1,61 @@
+###############################################################################
+# Divisao das secoes - Status, Recursos, jobs, tasks , grupos, etc..
+################################################################################
+
 ---
+buildstatus_inprogress_master: &buildstatus_inprogress # progresso
+  put: buildstatus
+  params:
+    state: pending
+    repo: source
+
+buildstatus_master: &buildstatus # buildstatus
+  on_success:
+    put: buildstatus
+    params:
+      state: success # se sucesso
+      repo: source
+  on_failure:
+    put: buildstatus
+    params:
+      state: failure # se failure
+      repo: source
+
+###############################################################################
+# @Recursos utilizados pela esteira
+###############################################################################
 resources:
 # The repo with our Dockerfile
-- name: meu-repositorio-git
+#- name: meu-repositorio-git
+#  type: git
+#  icon: github
+#  source:
+#    uri: https://github.com/hugosamuel/stranger.git
+#    branch: main
+
+- name: git-develop
   type: git
   icon: github
+  source: #&source
+    uri: ((git-repo-name))
+    branch: develop #((git-branch))
+#    private_key: ((github-vwfs-br.private_key))
+
+- name: git-feature
+  type: git-multibranch
+  icon: github
+  source: #&source
+    uri: ((git-repo-name))
+    branches: 'feature\/(.*)'
+#    private_key: ((github-vwfs-br.private_key))
+
+- name: git-release
+  type: git-multibranch
+  icon: github
   source:
-    uri: https://github.com/hugosamuel/stranger.git
-    branch: main
+    uri: ((git-repo-name))
+    branch: 'release\/(.*)'
+#    private_key: ((github-vwfs-br.private_key))    
 
 # Where we will push the image
 - name: simple-image
@@ -15,16 +64,38 @@ resources:
   source:
     # You need to provide these variables when
     # setting the pipeline
-    repository:  slw.jfrog.io/((repo-img-name))/strapi
+    repository:  slw.jfrog.io/((repo-img-name))/((nome-projeto))
     tag: latest
     username: ((registry-username))
     password: ((registry-password))
 
+###############################################################################
+# Agrupamento de @groups jobs 
+###############################################################################
+
+groups:
+  - name: develop
+    jobs:
+      - vwfs-br-build
+
+  - name: feature
+    jobs:
+      - vwfs-br-build-feature
+      
+  - name: release
+    jobs:
+      - vwfs-br-build-release    
+
+###############################################################################
+# Inicio da esteira de @feature 
+
 jobs:
-- name: build-and-push
+- name: vwfs-br-build-feature
+  public: true
   plan:
   - get: meu-repositorio-git
-
+    resource: git-feature
+    trigger: false
   - task: build-task-image
     privileged: true
     config:
@@ -32,8 +103,6 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          # Check out the README for oci-build-task at
-          # https://github.com/concourse/oci-build-task
           repository: concourse/oci-build-task
       inputs:
       - name: meu-repositorio-git
@@ -52,8 +121,6 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          # Check out the README for oci-build-task at
-          # https://github.com/concourse/oci-build-task
           repository: node
       inputs:
       - name: meu-repositorio-git
@@ -85,4 +152,135 @@ jobs:
       image: image/image.tar
       additional_tags: version-info/release-tags
 
+###############################################################################
+# Inicio da esteira de @develop
+
+jobs:
+- name: vwfs-br-build
+  public: true
+  plan:
+  - get: meu-repositorio-git
+    resource: git-develop
+    trigger: false
+  - task: build-task-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: concourse/oci-build-task
+      inputs:
+      - name: meu-repositorio-git
+      outputs:
+      - name: image
+      params:
+        CONTEXT: meu-repositorio-git/contexto
+        UNPACK_ROOTFS: "true" # only needed if using image in a future step
+      run:
+        path: build
+
+  - task: version-tar
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: node
+      inputs:
+      - name: meu-repositorio-git
+      outputs:
+      - name: version-info
+      run:
+        path: /bin/sh
+        args:
+          - -exc
+          - |
+              echo "---------- DBUG001"
+              pwd && ls -la
+              
+              cd meu-repositorio-git 
+              echo "---------- DBUG002-criando a tag"
+              export BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
+              export DATESTRING=${BRANCH_NAME}'-'$(date +"%y%m%d%S")' '${BRANCH_NAME}'-latest'
+              cd ..              
+              pwd && ls -la
+              echo ${DATESTRING}
+              echo ${DATESTRING} > version-info/release-tags
+              echo $BRANCH_NAME
+              echo "---------- DBUG003-list do dist"
+              ls -la meu-repositorio-git
+
+  - put: application-repository
+    resource: simple-image
+    params:
+      image: image/image.tar
+      additional_tags: version-info/release-tags
+
+###############################################################################
+# Inicio da esteira de @release
+
+jobs:
+- name: vwfs-br-build-release
+  public: true
+  plan:
+  - get: meu-repositorio-git
+    resource: git-release
+    trigger: false
+  - task: build-task-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: concourse/oci-build-task
+      inputs:
+      - name: meu-repositorio-git
+      outputs:
+      - name: image
+      params:
+        CONTEXT: meu-repositorio-git/contexto
+        UNPACK_ROOTFS: "true" # only needed if using image in a future step
+      run:
+        path: build
+
+  - task: version-tar
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: node
+      inputs:
+      - name: meu-repositorio-git
+      outputs:
+      - name: version-info
+      run:
+        path: /bin/sh
+        args:
+          - -exc
+          - |
+              echo "---------- DBUG001"
+              pwd && ls -la
+              
+              cd meu-repositorio-git 
+              echo "---------- DBUG002-criando a tag"
+              export BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
+              export DATESTRING=${BRANCH_NAME}'-'$(date +"%y%m%d%S")' '${BRANCH_NAME}'-latest'
+              cd ..              
+              pwd && ls -la
+              echo ${DATESTRING}
+              echo ${DATESTRING} > version-info/release-tags
+              echo $BRANCH_NAME
+              echo "---------- DBUG003-list do dist"
+              ls -la meu-repositorio-git
+
+  - put: application-repository
+    resource: simple-image
+    params:
+      image: image/image.tar
+      additional_tags: version-info/release-tags
     

@@ -5,3 +5,6 @@
 registry-username: "hugo.hscb@gmail.com"
 registry-password: "Jfrog@987"
 repo-img-name: "/docker-local/"
+
+nome-projeto: "strapi"
+git-repo-name: "https://github.com/hugosamuel/stranger.git"
