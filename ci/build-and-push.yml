@@ -73,6 +73,7 @@ jobs:
               export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S") $(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-latest
               cd ..              
               pwd && ls -la
+              echo ${DATESTRING}
               echo ${DATESTRING} > version-info/release-tags
               echo $BRANCH_NAME
               echo "---------- DBUG003-list do dist"
