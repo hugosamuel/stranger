@@ -85,6 +85,7 @@ jobs:
     resource: simple-image
     params:
       image: image/image.tar
-      additional_tags: version-info/release-tags version-info/release-tags1
+      additional_tags: version-info/release-tags
+      additional_tags: version-info/release-tags1
 
     
