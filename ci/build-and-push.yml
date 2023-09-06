@@ -70,11 +70,13 @@ jobs:
               cd meu-repositorio-git 
               echo "---------- DBUG002-criando a tag"
               export BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
-              export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S") $(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S")
+              export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S")
+              export DATESTRING1=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-latest
               cd ..              
               pwd && ls -la
               echo ${DATESTRING}
               echo ${DATESTRING} > version-info/release-tags
+              echo ${DATESTRING1} > version-info/release-tags1
               echo $BRANCH_NAME
               echo "---------- DBUG003-list do dist"
               ls -la meu-repositorio-git
@@ -83,6 +85,6 @@ jobs:
     resource: simple-image
     params:
       image: image/image.tar
-      additional_tags: version-info/release-tags
+      additional_tags: version-info/release-tags version-info/release-tags1
 
     
