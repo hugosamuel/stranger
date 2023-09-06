@@ -1,7 +1,7 @@
 ---
 resources:
 # The repo with our Dockerfile
-- name: concourse-examples
+- name: meu-repositorio-git
   type: git
   icon: github
   source:
