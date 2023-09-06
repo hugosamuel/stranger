@@ -150,8 +150,10 @@ jobs:
     resource: simple-image
     params:
       image: image/image.tar
-      tag_as_latest: true
+      labels:
+        version: latest
       additional_tags: version-info/release-tags
+      tag_as_latest: true
 
 ###############################################################################
 # Inicio da esteira de @develop
