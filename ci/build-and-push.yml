@@ -23,7 +23,7 @@ resources:
 jobs:
 - name: build-and-push
   plan:
-  - get: concourse-examples
+  - get: meu-repositorio-git
 
   - task: build-task-image
     privileged: true
