@@ -16,7 +16,7 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository:  slw.jfrog.io/((repo-img-name))/strapi
-    tag: version-info/release-tags
+    tag: latest
     username: ((registry-username))
     password: ((registry-password))
 
@@ -24,6 +24,7 @@ jobs:
 - name: build-and-push
   plan:
   - get: concourse-examples
+
   - task: build-task-image
     privileged: true
     config:
@@ -35,12 +36,29 @@ jobs:
           # https://github.com/concourse/oci-build-task
           repository: concourse/oci-build-task
       inputs:
-      - name: concourse-examples
-      outputs:
       - name: meu-repositorio-git
+      outputs:
+      - name: image
       params:
-        CONTEXT: concourse-examples/contexto
+        CONTEXT: meu-repositorio-git
         UNPACK_ROOTFS: "true" # only needed if using image in a future step
+      run:
+        path: build
+
+  - task: version-tar
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          # Check out the README for oci-build-task at
+          # https://github.com/concourse/oci-build-task
+          repository: node
+      inputs:
+      - name: meu-repositorio-git
+      outputs:
+      - name: version-info
       run:
         path: /bin/sh
         args:
@@ -59,9 +77,11 @@ jobs:
               echo $BRANCH_NAME
               echo "---------- DBUG003-list do dist"
               ls -la meu-repositorio-git/dist
-  - put: simple-image
+
+  - put: application-repository
+    resource: simple-image
     params:
       image: image/image.tar
- #     additional_tags: version-info/release-tags
+      additional_tags: version-info/release-tags
 
     
