@@ -43,22 +43,22 @@ jobs:
         UNPACK_ROOTFS: "true" # only needed if using image in a future step
       run:
         path: /bin/sh
-          args:
-            - -exc
-            - |
-                echo "---------- DBUG001"
-                pwd && ls -la
-                
-                cd meu-repositorio-git 
-                echo "---------- DBUG002-criando a tag"
-                BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
-                export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S")
-                cd ..              
-                pwd && ls -la
-                echo ${DATESTRING} > version-info/release-tags
-                echo $BRANCH_NAME
-                echo "---------- DBUG003-list do dist"
-                ls -la meu-repositorio-git/dist
+        args:
+          - -exc
+          - |
+              echo "---------- DBUG001"
+              pwd && ls -la
+              
+              cd meu-repositorio-git 
+              echo "---------- DBUG002-criando a tag"
+              BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
+              export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S")
+              cd ..              
+              pwd && ls -la
+              echo ${DATESTRING} > version-info/release-tags
+              echo $BRANCH_NAME
+              echo "---------- DBUG003-list do dist"
+              ls -la meu-repositorio-git/dist
   - put: simple-image
     params:
       image: image/image.tar
