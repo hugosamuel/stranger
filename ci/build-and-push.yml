@@ -65,7 +65,6 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository:  slw.jfrog.io/((repo-img-name))/((nome-projeto))
-    folder: teste
     tag: latest
     username: ((registry-username))
     password: ((registry-password))
@@ -151,6 +150,7 @@ jobs:
     resource: simple-image
     params:
       image: image/image.tar
+      folder: teste
       additional_tags: version-info/release-tags
 
 ###############################################################################
