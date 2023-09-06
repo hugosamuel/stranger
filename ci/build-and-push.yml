@@ -16,7 +16,7 @@ resources:
     # You need to provide these variables when
     # setting the pipeline
     repository:  slw.jfrog.io/((repo-img-name))/strapi
-    tag: version
+    tag: version-info/release-tags
     username: ((registry-username))
     password: ((registry-password))
 
@@ -51,7 +51,7 @@ jobs:
               
               cd meu-repositorio-git 
               echo "---------- DBUG002-criando a tag"
-              BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
+              export BRANCH_NAME=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")
               export DATESTRING=$(git show -s --pretty=%D HEAD | tr -s ', ' '\n' | grep -v HEAD | sed -n 2p | sed "s|feature/||g")-$(date +"%y%m%d%S")
               cd ..              
               pwd && ls -la
@@ -62,6 +62,6 @@ jobs:
   - put: simple-image
     params:
       image: image/image.tar
-      additional_tags: version-info/release-tags
+ #     additional_tags: version-info/release-tags
 
     
