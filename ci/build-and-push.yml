@@ -40,7 +40,7 @@ jobs:
       outputs:
       - name: image
       params:
-        CONTEXT: meu-repositorio-git
+        CONTEXT: stranger
         UNPACK_ROOTFS: "true" # only needed if using image in a future step
       run:
         path: build
