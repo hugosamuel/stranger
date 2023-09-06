@@ -155,7 +155,6 @@ jobs:
 ###############################################################################
 # Inicio da esteira de @develop
 
-jobs:
 - name: vwfs-br-build
   public: true
   plan:
@@ -221,7 +220,6 @@ jobs:
 ###############################################################################
 # Inicio da esteira de @release
 
-jobs:
 - name: vwfs-br-build-release
   public: true
   plan:
