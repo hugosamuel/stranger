@@ -150,7 +150,7 @@ jobs:
     resource: simple-image
     params:
       image: image/image.tar
-      folder: teste
+      tag_as_latest: true
       additional_tags: version-info/release-tags
 
 ###############################################################################
